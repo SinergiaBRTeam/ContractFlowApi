@@ -31,6 +31,7 @@ public class ContractsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateContractRequest request, CancellationToken ct)
     {
+        if (request is null) return BadRequest();
         var id = await _service.CreateContractAsync(request, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }

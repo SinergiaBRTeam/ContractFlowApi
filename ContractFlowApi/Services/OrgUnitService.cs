@@ -28,8 +28,8 @@ namespace ContractsMvc.Services
         {
             var ou = new OrgUnit
             {
-                Name = request.Name,
-                Code = request.Code
+                Name = string.IsNullOrWhiteSpace(request.Name) ? "" : request.Name,
+                Code = string.IsNullOrWhiteSpace(request.Code) ? null : request.Code
             };
             _db.OrgUnits.Add(ou);
             await _db.SaveChangesAsync(ct);
@@ -65,8 +65,8 @@ namespace ContractsMvc.Services
         {
             var ou = await _db.OrgUnits.FirstOrDefaultAsync(x => x.Id == id, ct);
             if (ou == null) return false;
-            ou.Name = request.Name;
-            ou.Code = request.Code;
+            ou.Name = string.IsNullOrWhiteSpace(request.Name) ? ou.Name : request.Name;
+            ou.Code = string.IsNullOrWhiteSpace(request.Code) ? ou.Code : request.Code;
             ou.UpdatedAt = DateTime.UtcNow;
             await _db.SaveChangesAsync(ct);
             return true;

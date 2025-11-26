@@ -38,20 +38,22 @@ namespace ContractsMvc.Controllers
             return Ok(dto);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateOrgUnitRequest request, CancellationToken ct)
-        {
-            var dto = await _service.CreateAsync(request, ct);
-            return CreatedAtAction(nameof(GetById), new { id = dto.Id }, new { id = dto.Id });
-        }
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateOrgUnitRequest request, CancellationToken ct)
+    {
+        if (request is null) return BadRequest();
+        var dto = await _service.CreateAsync(request, ct);
+        return CreatedAtAction(nameof(GetById), new { id = dto.Id }, new { id = dto.Id });
+    }
 
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateOrgUnitRequest request, CancellationToken ct)
-        {
-            var ok = await _service.UpdateAsync(id, request, ct);
-            if (!ok) return NotFound();
-            return NoContent();
-        }
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateOrgUnitRequest request, CancellationToken ct)
+    {
+        if (request is null) return BadRequest();
+        var ok = await _service.UpdateAsync(id, request, ct);
+        if (!ok) return NotFound();
+        return NoContent();
+    }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken ct)

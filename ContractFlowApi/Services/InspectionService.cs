@@ -34,7 +34,7 @@ namespace ContractsMvc.Services
                 DeliverableId = deliverable.Id,
                 Deliverable = deliverable,
                 Date = request.Date,
-                Inspector = request.Inspector,
+                Inspector = string.IsNullOrWhiteSpace(request.Inspector) ? "" : request.Inspector,
                 Notes = request.Notes
             };
             _db.Inspections.Add(ins);
@@ -84,7 +84,7 @@ namespace ContractsMvc.Services
             var ins = await _db.Inspections.FirstOrDefaultAsync(i => i.Id == id, ct);
             if (ins == null) return false;
             ins.Date = request.Date;
-            ins.Inspector = request.Inspector;
+            ins.Inspector = string.IsNullOrWhiteSpace(request.Inspector) ? ins.Inspector : request.Inspector;
             ins.Notes = request.Notes;
             ins.UpdatedAt = DateTime.UtcNow;
             await _db.SaveChangesAsync(ct);

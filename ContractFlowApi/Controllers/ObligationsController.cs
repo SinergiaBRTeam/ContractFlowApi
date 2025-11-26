@@ -49,24 +49,26 @@ namespace ContractsMvc.Controllers
         /// Creates a new obligation under the specified contract. Returns
         /// 404 when the contract is not found.
         /// </summary>
-        [HttpPost("contracts/{contractId:guid}/obligations")]
-        public async Task<IActionResult> Create(Guid contractId, [FromBody] CreateObligationRequest request, CancellationToken ct)
-        {
-            var dto = await _service.CreateAsync(contractId, request, ct);
-            if (dto == null) return NotFound();
-            return CreatedAtAction(nameof(GetById), new { id = dto.Id }, new { id = dto.Id });
-        }
+    [HttpPost("contracts/{contractId:guid}/obligations")]
+    public async Task<IActionResult> Create(Guid contractId, [FromBody] CreateObligationRequest request, CancellationToken ct)
+    {
+        if (request is null) return BadRequest();
+        var dto = await _service.CreateAsync(contractId, request, ct);
+        if (dto == null) return NotFound();
+        return CreatedAtAction(nameof(GetById), new { id = dto.Id }, new { id = dto.Id });
+    }
 
         /// <summary>
         /// Updates an existing obligation.
         /// </summary>
-        [HttpPut("obligations/{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateObligationRequest request, CancellationToken ct)
-        {
-            var ok = await _service.UpdateAsync(id, request, ct);
-            if (!ok) return NotFound();
-            return NoContent();
-        }
+    [HttpPut("obligations/{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateObligationRequest request, CancellationToken ct)
+    {
+        if (request is null) return BadRequest();
+        var ok = await _service.UpdateAsync(id, request, ct);
+        if (!ok) return NotFound();
+        return NoContent();
+    }
 
         /// <summary>
         /// Soft deletes an obligation.

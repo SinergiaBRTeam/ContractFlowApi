@@ -28,8 +28,8 @@ namespace ContractsMvc.Services
         {
             var supplier = new Supplier
             {
-                CorporateName = request.CorporateName,
-                Cnpj = request.Cnpj,
+                CorporateName = string.IsNullOrWhiteSpace(request.CorporateName) ? "" : request.CorporateName,
+                Cnpj = string.IsNullOrWhiteSpace(request.Cnpj) ? string.Empty : request.Cnpj,
                 Active = request.Active
             };
             _db.Suppliers.Add(supplier);
@@ -74,8 +74,8 @@ namespace ContractsMvc.Services
         {
             var s = await _db.Suppliers.FirstOrDefaultAsync(x => x.Id == id, ct);
             if (s == null) return false;
-            s.CorporateName = request.CorporateName;
-            s.Cnpj = request.Cnpj;
+            s.CorporateName = string.IsNullOrWhiteSpace(request.CorporateName) ? s.CorporateName : request.CorporateName;
+            s.Cnpj = string.IsNullOrWhiteSpace(request.Cnpj) ? s.Cnpj : request.Cnpj;
             s.Active = request.Active;
             s.UpdatedAt = DateTime.UtcNow;
             await _db.SaveChangesAsync(ct);
