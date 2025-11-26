@@ -28,6 +28,7 @@ public class DeliverablesController : ControllerBase
     [HttpPost("obligations/{obligationId:guid}/deliverables")]
     public async Task<IActionResult> CreateDeliverable(Guid obligationId, [FromBody] CreateDeliverableRequest request, CancellationToken ct)
     {
+        if (request is null) return BadRequest();
         var deliverable = await _service.AddDeliverableAsync(obligationId, request.ExpectedDate, request.Quantity, request.Unit, ct);
         if (deliverable is null) return NotFound();
         return CreatedAtAction(nameof(GetDeliverable), new { deliverableId = deliverable.Id }, new { id = deliverable.Id });
@@ -62,6 +63,7 @@ public class DeliverablesController : ControllerBase
     [HttpPut("deliverables/{deliverableId:guid}/delivered")]
     public async Task<IActionResult> MarkDelivered(Guid deliverableId, [FromBody] MarkDeliveredRequest request, CancellationToken ct)
     {
+        if (request is null) return BadRequest();
         var d = await _service.MarkDeliverableDeliveredAsync(deliverableId, request.DeliveredAt, ct);
         if (d is null) return NotFound();
         return NoContent();

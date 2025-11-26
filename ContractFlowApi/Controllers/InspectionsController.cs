@@ -26,13 +26,14 @@ namespace ContractsMvc.Controllers
         /// Creates a new inspection for a deliverable. Returns 404 if the
         /// deliverable does not exist.
         /// </summary>
-        [HttpPost("deliverables/{deliverableId:guid}/inspections")]
-        public async Task<IActionResult> Create(Guid deliverableId, [FromBody] CreateInspectionRequest request, CancellationToken ct)
-        {
-            var dto = await _service.CreateAsync(deliverableId, request, ct);
-            if (dto == null) return NotFound();
-            return CreatedAtAction(nameof(GetById), new { id = dto.Id }, new { id = dto.Id });
-        }
+    [HttpPost("deliverables/{deliverableId:guid}/inspections")]
+    public async Task<IActionResult> Create(Guid deliverableId, [FromBody] CreateInspectionRequest request, CancellationToken ct)
+    {
+        if (request is null) return BadRequest();
+        var dto = await _service.CreateAsync(deliverableId, request, ct);
+        if (dto == null) return NotFound();
+        return CreatedAtAction(nameof(GetById), new { id = dto.Id }, new { id = dto.Id });
+    }
 
         /// <summary>
         /// Lists all inspections for a deliverable ordered by date descending.
@@ -58,13 +59,14 @@ namespace ContractsMvc.Controllers
         /// <summary>
         /// Updates an inspection. Returns 404 when not found.
         /// </summary>
-        [HttpPut("inspections/{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateInspectionRequest request, CancellationToken ct)
-        {
-            var ok = await _service.UpdateAsync(id, request, ct);
-            if (!ok) return NotFound();
-            return NoContent();
-        }
+    [HttpPut("inspections/{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateInspectionRequest request, CancellationToken ct)
+    {
+        if (request is null) return BadRequest();
+        var ok = await _service.UpdateAsync(id, request, ct);
+        if (!ok) return NotFound();
+        return NoContent();
+    }
 
         /// <summary>
         /// Soft deletes an inspection.

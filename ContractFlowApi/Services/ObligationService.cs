@@ -37,10 +37,10 @@ namespace ContractsMvc.Services
             {
                 ContractId = contract.Id,
                 Contract = contract,
-                ClauseRef = request.ClauseRef,
-                Description = request.Description,
+                ClauseRef = string.IsNullOrWhiteSpace(request.ClauseRef) ? "N/A" : request.ClauseRef,
+                Description = string.IsNullOrWhiteSpace(request.Description) ? "" : request.Description,
                 DueDate = request.DueDate,
-                Status = request.Status ?? "Pending"
+                Status = string.IsNullOrWhiteSpace(request.Status) ? "Pending" : request.Status
             };
             _db.Obligations.Add(ob);
             await _db.SaveChangesAsync(ct);
@@ -101,10 +101,10 @@ namespace ContractsMvc.Services
         {
             var ob = await _db.Obligations.FirstOrDefaultAsync(o => o.Id == id, ct);
             if (ob == null) return false;
-            ob.ClauseRef = request.ClauseRef;
-            ob.Description = request.Description;
+            ob.ClauseRef = string.IsNullOrWhiteSpace(request.ClauseRef) ? ob.ClauseRef : request.ClauseRef;
+            ob.Description = string.IsNullOrWhiteSpace(request.Description) ? ob.Description : request.Description;
             ob.DueDate = request.DueDate;
-            ob.Status = request.Status;
+            ob.Status = string.IsNullOrWhiteSpace(request.Status) ? ob.Status : request.Status;
             ob.UpdatedAt = DateTime.UtcNow;
             await _db.SaveChangesAsync(ct);
             return true;

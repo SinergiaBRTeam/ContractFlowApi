@@ -27,6 +27,7 @@ public class NonCompliancesController : ControllerBase
     [HttpPost("obligations/{obligationId:guid}/noncompliances")]
     public async Task<IActionResult> RegisterNonCompliance(Guid obligationId, [FromBody] RegisterNonComplianceRequest request, CancellationToken ct)
     {
+        if (request is null) return BadRequest();
         var nc = await _service.RegisterNonComplianceAsync(obligationId, request.Reason, request.Severity, ct);
         if (nc is null) return NotFound();
         return Ok(new { id = nc.Id });
@@ -40,6 +41,7 @@ public class NonCompliancesController : ControllerBase
     [HttpPost("noncompliances/{nonComplianceId:guid}/penalties")]
     public async Task<IActionResult> ApplyPenalty(Guid nonComplianceId, [FromBody] ApplyPenaltyRequest request, CancellationToken ct)
     {
+        if (request is null) return BadRequest();
         try
         {
             var penalty = await _service.ApplyPenaltyAsync(nonComplianceId, request.Type, request.LegalBasis, request.Amount, ct);

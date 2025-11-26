@@ -31,8 +31,8 @@ public class ContractService
 
         var contract = new Contract
         {
-            OfficialNumber = request.OfficialNumber,
-            AdministrativeProcess = request.AdministrativeProcess,
+            OfficialNumber = string.IsNullOrWhiteSpace(request.OfficialNumber) ? "N/A" : request.OfficialNumber,
+            AdministrativeProcess = request.AdministrativeProcess ?? string.Empty,
             SupplierId = request.SupplierId,
             Supplier = supplier,
             OrgUnitId = request.OrgUnitId,
@@ -41,7 +41,7 @@ public class ContractService
             Modality = request.Modality,
             Status = ContractStatus.Active,
             Term = new Period(request.TermStart, request.TermEnd),
-            TotalValue = new Money(request.TotalAmount, request.Currency)
+            TotalValue = new Money(request.TotalAmount, string.IsNullOrWhiteSpace(request.Currency) ? "BRL" : request.Currency)
         };
 
         _db.Contracts.Add(contract);
@@ -151,7 +151,7 @@ public class ContractService
             Obligation = obligation,
             ExpectedDate = expectedDate,
             Quantity = quantity,
-            Unit = unit
+            Unit = string.IsNullOrWhiteSpace(unit) ? "un" : unit
         };
 
         obligation.Deliverables.Add(deliverable);
@@ -180,8 +180,8 @@ public class ContractService
         {
             ObligationId = obligation.Id,
             Obligation = obligation,
-            Reason = reason,
-            Severity = severity,
+            Reason = string.IsNullOrWhiteSpace(reason) ? "Motivo não informado" : reason,
+            Severity = string.IsNullOrWhiteSpace(severity) ? "Não informado" : severity,
             RegisteredAt = DateTime.UtcNow
         };
 
@@ -203,9 +203,9 @@ public class ContractService
         {
             NonComplianceId = nc.Id,
             NonCompliance = nc,
-            Type = type,
-            LegalBasis = legalBasis,
-            Amount = amount
+            Type = string.IsNullOrWhiteSpace(type) ? "Não informado" : type,
+            LegalBasis = string.IsNullOrWhiteSpace(legalBasis) ? null : legalBasis,
+            Amount = amount ?? 0
         };
 
         nc.Penalty = penalty;
