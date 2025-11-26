@@ -36,9 +36,16 @@ namespace ContractsMvc.Controllers
             if (request.File == null)
                 return BadRequest("No file uploaded");
 
-            var dto = await _service.CreateForDeliverableAsync(deliverableId, request.File, notes, ct);
-            if (dto == null) return NotFound();
-            return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
+            try
+            {
+                var dto = await _service.CreateForDeliverableAsync(deliverableId, request.File, notes, ct);
+                if (dto == null) return NotFound();
+                return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         /// <summary>
@@ -54,9 +61,16 @@ namespace ContractsMvc.Controllers
             if (request.File == null)
                 return BadRequest("No file uploaded");
 
-            var dto = await _service.CreateForInspectionAsync(inspectionId, request.File, notes, ct);
-            if (dto == null) return NotFound();
-            return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
+            try
+            {
+                var dto = await _service.CreateForInspectionAsync(inspectionId, request.File, notes, ct);
+                if (dto == null) return NotFound();
+                return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         /// <summary>
