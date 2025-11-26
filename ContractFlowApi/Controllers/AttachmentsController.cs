@@ -32,11 +32,18 @@ namespace ContractsMvc.Controllers
             if (request.File == null)
                 return BadRequest("No file uploaded");
 
-            var result = await _service.CreateAsync(contractId, request.File, ct);
-            if (result is null)
-                return NotFound(); 
+            try
+            {
+                var result = await _service.CreateAsync(contractId, request.File, ct);
+                if (result is null)
+                    return NotFound();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         /// <summary>

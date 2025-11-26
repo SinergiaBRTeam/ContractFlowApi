@@ -32,8 +32,21 @@ public class ContractsController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateContractRequest request, CancellationToken ct)
     {
         if (request is null) return BadRequest();
-        var id = await _service.CreateContractAsync(request, ct);
-        return CreatedAtAction(nameof(GetById), new { id }, new { id });
+
+        try
+        {
+            var id = await _service.CreateContractAsync(request, ct);
+            return CreatedAtAction(nameof(GetById), new { id }, new { id });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (DbUpdateException ex)
+        {
+            var message = ex.InnerException?.Message ?? ex.Message;
+            return BadRequest(new { message });
+        }
     }
 
     /// <summary>
