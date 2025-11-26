@@ -154,7 +154,11 @@ public class ContractService
             Unit = string.IsNullOrWhiteSpace(unit) ? "un" : unit
         };
 
-        obligation.Deliverables.Add(deliverable);
+        // Explicitly add to the DbSet to avoid state tracking issues that can
+        // lead to concurrency errors when EF thinks an update should occur
+        // instead of an insert.
+        _db.Deliverables.Add(deliverable);
+        obligation.UpdatedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync(ct);
         return deliverable;
     }
@@ -185,7 +189,8 @@ public class ContractService
             RegisteredAt = DateTime.UtcNow
         };
 
-        obligation.NonCompliances.Add(nc);
+        _db.NonCompliances.Add(nc);
+        obligation.UpdatedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync(ct);
         return nc;
     }
